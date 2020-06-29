@@ -1,0 +1,7 @@
+.idea
+.terraform
+crash.log
+lambda.zip
+terraform.tfstate*
+terraform.tfvars
+venv
