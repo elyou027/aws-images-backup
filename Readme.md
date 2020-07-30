@@ -46,4 +46,4 @@ When a specific plan is launched (by Cloudwatch rule with `plan_name` as a param
 as the value of `plan_name`, for example: `Server1BackupDaily`) and makes list for work. 
 2. for each Instance in this list looks at the value of the tag that == `plan_name`. This value is how long to save the image and its snapshots
 3. for each instance in the list makes image and adds tags to resulting resources (image and its snapshots). Also, add the tag `BackupSaveDays` with the value from step 2;
-4. searches all images with tag `BackupSaveDays` and compares with the current date. If some images suits to deletion deregisters image and removes all associated with this image snapshots
+4. searches all images with tag `BackupPolicy == plan_name` and with tag name `BackupSaveDays` and compares with the current date. If some images suits to deletion deregisters image and removes all associated with this image snapshots

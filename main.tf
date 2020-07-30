@@ -13,7 +13,7 @@ resource "aws_lambda_function" "lambda_backup_function" {
   source_code_hash = data.archive_file.lambda_backup_function_zip.output_base64sha256
   description      = "Making backups for instances via snapshots"
   runtime          = "python3.8"
-  timeout          = 30
+  timeout          = 600
 }
 
 resource "aws_cloudwatch_log_group" "lambda_backup_log_group" {

@@ -28,9 +28,12 @@ def snapshots_cleanup(image_id):
         s.delete(DryRun=False)
 
 
-def images_cleanup():
+def images_cleanup(plan_name):
     images_list = []
-    images = client.images.filter(Filters=[{'Name': 'tag-key', 'Values': ["BackupSaveDays"]}])
+    images = client.images.filter(Filters=[
+        {'Name': 'tag-key', 'Values': ["BackupSaveDays"]},
+        {'Name': 'tag:BackupPolicy', 'Values': [plan_name]}
+        ])
     for i in images:
         save_days = 0
         for days in [element.get('Value') for element in i.tags if
@@ -131,5 +134,5 @@ def images_handler(event, context):
                     save_days=save_days
                 )
 
-    images_cleanup()
+    images_cleanup(plan_name)
     return True
