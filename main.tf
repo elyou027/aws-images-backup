@@ -6,7 +6,7 @@ data "archive_file" "lambda_backup_function_zip" {
 
 resource "aws_lambda_function" "lambda_backup_function" {
   filename         = "lambda.zip"
-  function_name    = "lambda_images_backup"
+  function_name    = var.lambda_function_name
   role             = aws_iam_role.lambda_backup_role.arn
   handler          = "main.images_handler"
   depends_on       = [aws_cloudwatch_log_group.lambda_backup_log_group]
@@ -29,8 +29,8 @@ resource "aws_cloudwatch_event_rule" "lambda_backup" {
 }
 
 resource "aws_cloudwatch_event_target" "lambda_backup" {
-  depends_on = [aws_cloudwatch_event_rule.lambda_backup]
   count      = length(keys(var.plan))
+  depends_on = [aws_cloudwatch_event_rule.lambda_backup]
   rule       = aws_cloudwatch_event_rule.lambda_backup[count.index].name
   target_id  = format("lambda_backup_function-%s", keys(var.plan)[count.index])
   arn        = aws_lambda_function.lambda_backup_function.arn

@@ -6,6 +6,10 @@ variable "plan" {
   }
 }
 
+variable "lambda_function_name" {
+  default = "lambda_images_backup"
+}
+
 variable aws_profile {}
 
 variable "aws_region" {}

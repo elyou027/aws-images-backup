@@ -10,16 +10,17 @@ data "aws_iam_policy_document" "lambda_function" {
     }
   }
 }
+
 resource "aws_iam_role" "lambda_backup_role" {
-  name               = "lambda-backup-role"
+  name               = format("lambda-backup-role-%s",var.lambda_function_name)
   assume_role_policy = data.aws_iam_policy_document.lambda_function.json
   tags = {
-    Name = "lambda-backup-role"
+    Name = format("lambda-backup-role-%s",var.lambda_function_name)
   }
 }
 
 resource "aws_iam_policy" "lambda_backup_policy" {
-  name        = "lambda-backup-policy"
+  name        = format("lambda-backup-policy-%s",var.lambda_function_name)
   path        = "/"
   description = "IAM Policy for lambda-backup function"
 
