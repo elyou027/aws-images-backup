@@ -33,6 +33,24 @@ Features:
   ```
 
 # How it is works
+```shell
+terraform workspace list
+terraform workspace select myname
+cat < EOF > terraform.tfvars.myname
+aws_profile = "myname"
+aws_region  = "us-east-2"
+plan = {
+  MainBackupDaily    = "cron(15 4 * * ? *)"
+  SecondBackupDaily  = "cron(15 5 * * ? *)"
+  WeeklyBackup       = "cron(30 4 ? * 1 *)"
+  MonthlyBackup      = "cron(45 5 1 * ? *)"
+}
+
+lambda_function_name = "lambda_backup_ami_bots"
+
+EOF
+terraform apply -var-file terraform.tfvars.myname
+```
 When you run `terraform apply`, Terraform will:
 1. use your AWS profile name from variable `aws_profile`. You need to add some IAM permissions for creating Lambda 
 function, IAM policies and role, Cloudwatch rules and log groups. Or you can just create AWS Key with admin rights :)
@@ -47,3 +65,11 @@ as the value of `plan_name`, for example: `Server1BackupDaily`) and makes list f
 2. for each Instance in this list looks at the value of the tag that == `plan_name`. This value is how long to save the image and its snapshots
 3. for each instance in the list makes image and adds tags to resulting resources (image and its snapshots). Also, add the tag `BackupSaveDays` with the value from step 2;
 4. searches all images with tag `BackupPolicy == plan_name` and with tag name `BackupSaveDays` and compares with the current date. If some images suits to deletion deregisters image and removes all associated with this image snapshots
+
+# How to test rules
+Just go to AWS Lambda and launch test with data:
+```json
+{
+  "plan_name": "MonthlyBackup"
+}
+```
